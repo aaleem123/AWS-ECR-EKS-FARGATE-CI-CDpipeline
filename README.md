@@ -2,7 +2,7 @@
 **K8's Cluster:** AWS EKS with Fargate profile  
 **Image Registry:** AWS ECR  
 **CI-CD-PIPELINE:** Jenkins 
-Here are screenshots of the project in action:
+**Here are screenshots of the project in action:**
 
 ![Screenshot 2025-06-27 161539](https://github.com/user-attachments/assets/c572bce7-5d2a-45ce-944a-26b06c151c93)
 
