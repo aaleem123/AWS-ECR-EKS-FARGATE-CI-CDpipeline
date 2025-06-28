@@ -1,7 +1,22 @@
-**Application:** JAVA-GRADLE-APP  
-**K8's Cluster:** AWS EKS with Fargate profile  
-**Image Registry:** AWS ECR  
-**CI-CD-PIPELINE:** Jenkins 
+**JAVA-GRADLE-APP** 🚀
+- Modern Java application containerized and deployed on AWS EKS with Fargate, using AWS ECR for images and automated with Jenkins CI/CD.
+
+📦 **Tech Stack**
+- Language: Java (Gradle Build)
+- Containerization: Docker
+- Kubernetes: AWS EKS (Fargate Profile)
+- Image Registry: AWS ECR
+- CI/CD Pipeline: Jenkins
+
+🌍 **Project Overview**
+This project demonstrates:
+
+✅ Building a Java application with Gradle
+✅ Containerizing the application with Docker
+✅ Storing images securely in AWS ECR
+✅ Deploying workloads to AWS EKS Fargate
+✅ Fully automated CI/CD pipeline via Jenkins
+
 
 **Here are screenshots of the project in action:**
 
