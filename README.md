@@ -7,6 +7,7 @@
 - Kubernetes: AWS EKS (Fargate Profile)
 - Image Registry: AWS ECR
 - CI/CD Pipeline: Jenkins
+- NAT Gateway
 
 🌍 **Project Overview**
 
