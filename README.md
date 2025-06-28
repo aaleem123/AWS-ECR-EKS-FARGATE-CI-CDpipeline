@@ -11,11 +11,11 @@
 🌍 **Project Overview**
 This project demonstrates:
 
-✅ Building a Java application with Gradle
-✅ Containerizing the application with Docker
-✅ Storing images securely in AWS ECR
-✅ Deploying workloads to AWS EKS Fargate
-✅ Fully automated CI/CD pipeline via Jenkins
+✅ Building a Java application with Gradle/b
+✅ Containerizing the application with Docker/b
+✅ Storing images securely in AWS ECR/b
+✅ Deploying workloads to AWS EKS Fargate/b
+✅ Fully automated CI/CD pipeline via Jenkins/b
 
 
 **Here are screenshots of the project in action:**
