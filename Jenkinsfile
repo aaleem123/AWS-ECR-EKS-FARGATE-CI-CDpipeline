@@ -10,38 +10,38 @@ pipeline {
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    userRemoteConfigs: [[
-                        url: 'git@github.com:aaleem123/CI-CD-Pipeline-with-EKS-and-AWS-ECR.git',
-                        credentialsId: "${GIT_CREDENTIALS_ID}"
-                    ]]
-                ])
+                script {
+                    git (credentialsId: "${GIT_CREDENTIALS_ID}", 
+                        url: 'git@github.com:aaleem123/CI-CD-Pipeline-with-EKS-and-AWS-ECR.git', 
+                        branch: 'main')
+                }
             }
         }
 
         stage('Increment Version') {
             steps {
                 sshagent (credentials: ["${GIT_CREDENTIALS_ID}"]) {
-                sh '''#!/bin/bash
-                    set -e
-                    echo "Extracting current version..."
-                    version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-                    echo "Current version: $version"
+                    script {
+                        sh '''
+                            mvn build-helper:parse-version versions:set \
+                            -DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.$((parsedVersion.incrementalVersion + 1)) \
+                            versions:commit
+                        '''
+                        def pomfix = readFile('pom.xml')
+                        def matcher = pomfix =~ '<version>(.+)</version>'
+                        def version = matcher[0][1]
+                        env.IMAGE_NAME = "${ECR_REPO}:${version}-${BUILD_NUMBER}"
 
-                    new_version=$(echo $version | awk -F. -v OFS=. '{$NF += 1; print}')
-                    echo "Bumping to version: $new_version"
-
-                    mvn versions:set -DnewVersion=$new_version versions:commit
-
-                    git config user.email "ci@example.com"
-                    git config user.name "CI Pipeline"
-                    git add pom.xml
-                    git commit -m "Bump version to $new_version"
-                    git push origin HEAD:main
-                '''
+                        sh '''
+                            git config user.email "ci@example.com"
+                            git config user.name "CI Pipeline"
+                            git add pom.xml
+                            git commit -m "Bump version to ${version}"
+                            git push origin HEAD:main
+                        '''
+                    }
                 }
             }
         }
@@ -54,21 +54,20 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${ECR_REPO}:latest ."
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
         stage('Push to ECR') {
             steps {
                 withCredentials([usernamePassword(credentialsId: "${ECR_CREDENTIALS_ID}", usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''#!/bin/bash
-                        set -e
+                    sh '''
                         aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
                         aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
                         aws configure set region ${AWS_REGION}
 
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
-                        docker push ${ECR_REPO}:latest
+                        docker push ${IMAGE_NAME}
                     '''
                 }
             }
