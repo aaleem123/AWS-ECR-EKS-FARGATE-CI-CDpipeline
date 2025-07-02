@@ -32,15 +32,16 @@ pipeline {
                         def pomfix = readFile('pom.xml')
                         def matcher = pomfix =~ '<version>(.+)</version>'
                         def version = matcher[0][1]
+                        
                         env.IMAGE_NAME = "${ECR_REPO}:${version}-${BUILD_NUMBER}"
 
-                        sh '''
+                        sh """
                             git config user.email "ci@example.com"
                             git config user.name "CI Pipeline"
                             git add pom.xml
                             git commit -m "Bump version to ${version}"
                             git push origin HEAD:main
-                        '''
+                        """
                     }
                 }
             }
